@@ -7,7 +7,7 @@ public class PlayerControllerX : MonoBehaviour
     public bool gameOver;
 
     public float floatForce;
-    private float gravityModifier = 1.5f;
+    private float gravityModifier = 1.9f;
     private Rigidbody playerRb;
 
     public ParticleSystem explosionParticle;
@@ -31,7 +31,7 @@ public class PlayerControllerX : MonoBehaviour
         ballonAnimator = GetComponent<Animator>();
 
         // Apply a small upward force at the start of the game
-        playerRb.AddForce(Vector3.up * 5, ForceMode.Impulse);
+        playerRb.AddForce(Vector3.up * 1, ForceMode.Impulse);
 
     }
 
@@ -39,22 +39,28 @@ public class PlayerControllerX : MonoBehaviour
     void Update()
     {
         // While space is pressed and player is low enough, float up
-        if (Input.GetKey(KeyCode.Space) && !gameOver && isBallonLowEnough)
+        if (transform.position.y < 14)
+        {
+            isBallonLowEnough = false;
+        }  else { isBallonLowEnough =true;}
+
+        if (Input.GetKey(KeyCode.Space) && !gameOver  )
         {
             playerRb.AddForce(Vector3.up * floatForce, ForceMode.Impulse);
         }
 
-        if(transform.position.y < 17){ 
+        /*if(transform.position.y < 17){ 
             isBallonLowEnough = false;
         }
         else{ 
             isBallonLowEnough = true; 
-        }
+        }*/
     }
 
     private void OnCollisionEnter(Collision other)
     {
         // if player collides with bomb, explode and set gameOver to true
+        
         if (other.gameObject.CompareTag("Bomb"))
         {
             explosionParticle.Play();
@@ -75,10 +81,11 @@ public class PlayerControllerX : MonoBehaviour
 
         else if (other.gameObject.CompareTag("Ground")){ 
 
-            playerRb.AddForce(Vector3.up * 5, ForceMode.Impulse);
+            playerRb.AddForce(Vector3.up * 20, ForceMode.Impulse);
             playerAudio.PlayOneShot(bounceSound, 1.9f);
         }
 
+        
     }
 
 }
